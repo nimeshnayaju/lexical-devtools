@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "version": "0.0.1",
+  "name": "lexical-devtools",
+  "description": "Lexical developer tools",
+  "permissions": ["scripting", "activeTab", "webNavigation", "tabs"],
+  "host_permissions": ["*://localhost/*"],
+  "content_scripts": [
+    {
+      "matches": ["*://localhost/*"],
+      "js": ["./content.ts"]
+    }
+  ],
+  "background": {
+    "service_worker": "./background.ts"
+  },
+  "externally_connectable": {
+    "matches": ["*://localhost/*"]
+  },
+  "devtools_page": "./devtools/index.html",
+  "icons": {
+    "16": "public/icon/icon_16.png",
+    "48": "public/icon/icon_48.png"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl5AjVhsXComZySWKYJ7Ykg+lBQmpLGXY/mqGsHUhjRRvJ7H+EnE6g7yM/xEdEk2ev2VEFE1mITIW9SU1em8Ax6hnlAPGuRxhfG4tmTk+AIn6WczPaCIdH0zHqdaeRXure+Fx7ySDrMvCDOebXt6vttclrcTU8vqmPZuS8kTJYxwpWaMrc+sYRI4Pny7rK3t09A6W9RWwuozRrqvWzhvKJ+YwtWdYaVr8NgSHSFY1M0p10eO/K8jasVzlR2Tg9gNrKjR0CmQ1AGcay+Z3s715SkDFiEJ5/HksvbjvItQqRHeE/+ioB0AiJwUnx61pclc5Kgv9zu53+anDlhywap13UwIDAQAB"
+}
