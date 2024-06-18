@@ -20,6 +20,7 @@ import {
   $createListNode,
   $createListItemNode,
 } from "@lexical/list";
+import DevtoolsPlugin from "./lexical/devtools-plugin";
 import { $createLinkNode, AutoLinkNode, LinkNode } from "@lexical/link";
 
 export default function Home() {
@@ -75,6 +76,8 @@ export default function Home() {
                 Start typing...
               </div>
             </Placeholder>
+
+            <DevtoolsPlugin />
 
             <DecoratorsPlugin />
             <RichTextPlugin />
