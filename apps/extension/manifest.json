@@ -8,7 +8,7 @@
   "content_scripts": [
     {
       "matches": ["*://localhost/*"],
-      "js": ["./content.ts"]
+      "js": ["./content/main.tsx"]
     }
   ],
   "background": {
