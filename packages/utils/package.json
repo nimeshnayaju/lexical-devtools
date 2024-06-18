@@ -18,12 +18,10 @@
     "dev": "tsup --watch"
   },
   "peerDependencies": {
-    "lexical": "^0.16.0",
-    "react": ">=17.x"
+    "lexical": "^0.16.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
-    "@types/react": "^18.3.2",
     "tsup": "^8.1.0",
     "typescript": "^5.4.5"
   }
