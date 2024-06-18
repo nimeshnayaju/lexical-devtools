@@ -11,6 +11,7 @@
   "dependencies": {
     "@lexical/dragon": "^0.16.0",
     "@lexical/history": "^0.16.0",
+    "@lexical/link": "^0.16.0",
     "@lexical/list": "^0.16.0",
     "@lexical/rich-text": "^0.16.0",
     "@lexical/table": "^0.16.0",
