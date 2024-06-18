@@ -5,17 +5,17 @@
     "build": "extension build"
   },
   "dependencies": {
-    "lexical": "^0.15.0",
     "react": "^19.0.0-beta",
     "react-dom": "^19.0.0-beta"
   },
   "devDependencies": {
+    "@lexical-devtools/utils": "*",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
     "extension": "^1.7.1",
-    "tailwindcss": "^3.4.1",
-    "typescript": "5.4.5",
-    "@lexical-devtools/utils": "*"
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5"
   },
   "name": "lexical-devtools",
   "private": true,
