@@ -1,5 +1,6 @@
 import {
   createContext,
+  DetailedHTMLProps,
   HTMLAttributes,
   MouseEvent,
   ReactNode,
@@ -44,7 +45,11 @@ function Root(props: RootProps) {
   );
 }
 
-interface TreeProps extends HTMLAttributes<HTMLUListElement> {}
+interface TreeProps
+  extends DetailedHTMLProps<
+    HTMLAttributes<HTMLUListElement>,
+    HTMLUListElement
+  > {}
 
 function Tree(props: TreeProps) {
   const { children, ...ulProps } = props;
@@ -84,40 +89,22 @@ const ItemValueContext = createContext<string | null>(null);
 
 const AncestorsContext = createContext<string[]>([]);
 
-interface ItemProps extends HTMLAttributes<HTMLLIElement> {
+interface ItemProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
   value: string;
 }
 
 function Item(props: ItemProps) {
-  const { children, value, style, onClick, onDoubleClick, ...liProps } = props;
+  const { children, value, style, ...liProps } = props;
 
   const isSelected = useIsSelected(value);
 
   const isCollapsed = useIsCollapsed(value);
 
-  const select = useSelectNode(value);
-  const expand = useExpandNode(value);
-
   const ancestors = use(AncestorsContext);
 
   // The depth of the item in the tree (0-indexed) is the number of ancestors of the item.
   const depth = ancestors.length;
-
-  function handleClick(event: MouseEvent<HTMLLIElement>) {
-    onClick?.(event);
-    if (event.defaultPrevented) return;
-
-    select();
-    event.stopPropagation();
-  }
-
-  function handleDoubleClick(event: MouseEvent<HTMLLIElement>) {
-    onDoubleClick?.(event);
-    if (event.defaultPrevented) return;
-
-    expand();
-    event.stopPropagation();
-  }
 
   return (
     <AncestorsContext.Provider value={ancestors.concat(value)}>
@@ -134,8 +121,6 @@ function Item(props: ItemProps) {
             ["--depth" as any]: depth,
             ...style,
           }}
-          onClick={handleClick}
-          onDoubleClick={handleDoubleClick}
         >
           {children}
         </li>
@@ -144,7 +129,8 @@ function Item(props: ItemProps) {
   );
 }
 
-interface TriggerProps extends HTMLAttributes<HTMLSpanElement> {}
+interface TriggerProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {}
 
 function Trigger(props: TriggerProps) {
   const { children, onClick, ...spanProps } = props;
@@ -158,20 +144,16 @@ function Trigger(props: TriggerProps) {
   const expand = useExpandNode(value);
 
   const isCollapsed = useIsCollapsed(value);
-  const select = useSelectNode(value);
 
   function handleClick(event: MouseEvent<HTMLSpanElement>) {
     onClick?.(event);
     if (event.defaultPrevented) return;
 
-    select();
     if (isCollapsed) {
       expand();
     } else {
       collapse();
     }
-
-    event.stopPropagation();
   }
 
   return (
@@ -182,6 +164,51 @@ function Trigger(props: TriggerProps) {
     >
       {children}
     </span>
+  );
+}
+
+interface ItemTextProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
+
+function ItemText(props: ItemTextProps) {
+  const { onClick, onDoubleClick, ...divProps } = props;
+
+  const value = use(ItemValueContext);
+  if (value === null) {
+    throw new Error("Trigger must be used within an Item component");
+  }
+
+  const isSelected = useIsSelected(value);
+
+  const isCollapsed = useIsCollapsed(value);
+
+  const select = useSelectNode(value);
+  const expand = useExpandNode(value);
+
+  function handleClick(event: MouseEvent<HTMLDivElement>) {
+    onClick?.(event);
+    if (event.defaultPrevented) return;
+
+    select();
+    event.stopPropagation();
+  }
+
+  function handleDoubleClick(event: MouseEvent<HTMLDivElement>) {
+    onDoubleClick?.(event);
+    if (event.defaultPrevented) return;
+
+    expand();
+    event.stopPropagation();
+  }
+
+  return (
+    <div
+      data-state={isCollapsed ? "closed" : "open"}
+      data-selected={isSelected ? "" : undefined}
+      {...divProps}
+      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
+    />
   );
 }
 
@@ -280,7 +307,7 @@ function useExpandNode(key: string) {
 }
 
 /**
- * Returns a function that selects the node with the given key. All of the nodes' ancestors will be expanded if they are not already expanded.
+ * Returns a function that selects the node with the given key.
  * @param key The key of the node to select.
  * @returns A function that selects the node with the given key.
  */
@@ -288,30 +315,15 @@ function useSelectNode(key: string) {
   const isSelected = useIsSelected(key);
   const dispatchSelected = useDispatchSelected();
 
-  const collapsed = useCollapsed();
-  const dispatchCollapsed = useDispatchCollapsed();
-
-  const ancestors = use(AncestorsContext);
-
   /**
-   * Select the node with the given key. All of the nodes' ancestors will be expanded if they are not already expanded.
+   * Select the node with the given key.
    */
   const selectNode = useCallback(() => {
     if (isSelected) return;
 
-    // Expand all ancestors of the node to select
-    dispatchCollapsed(collapsed.filter((k) => !ancestors.includes(k)));
-
     // Select the node
     dispatchSelected([key]);
-  }, [
-    isSelected,
-    collapsed,
-    dispatchCollapsed,
-    ancestors,
-    dispatchSelected,
-    key,
-  ]);
+  }, [isSelected, dispatchSelected, key]);
 
   return selectNode;
 }
@@ -320,9 +332,10 @@ export {
   Root,
   Tree,
   Item,
+  ItemText,
   Trigger,
   RootProps,
   TreeProps,
-  ItemProps,
   TriggerProps,
+  ItemTextProps,
 };
