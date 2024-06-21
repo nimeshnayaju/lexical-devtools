@@ -165,9 +165,7 @@ function Panel({ editors }: { editors: SerializedEditorState[] }) {
           >
             {editors.map((editor) => (
               <option key={editor.id} value={editor.id}>
-                <span>
-                  {editor.id} ({editor.namespace})
-                </span>
+                {editor.id} ({editor.namespace})
               </option>
             ))}
           </select>
@@ -199,7 +197,7 @@ function Panel({ editors }: { editors: SerializedEditorState[] }) {
 }
 
 function Editor({ state }: { state: SerializedEditorState }) {
-  const [selected, setSelected] = useState<string[]>(["root"]);
+  const [selected, setSelected] = useState<string[]>([]);
   const [collapsed, setCollapsed] = useState<string[]>([]);
 
   return (

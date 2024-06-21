@@ -25,7 +25,7 @@ import { $createLinkNode, AutoLinkNode, LinkNode } from "@lexical/link";
 
 export default function Home() {
   return (
-    <main className="h-screen bg-white font-sans dark:bg-zinc-900 w-[875px] m-auto p-8">
+    <main className="h-screen w-[875px] m-auto p-8">
       <Composer
         config={{
           namespace: "devtools",
@@ -108,8 +108,8 @@ function InitialEditorValuePlugin() {
       quote.append(
         $createTextNode(
           `In case you were wondering what the black box at the bottom is – it's the debug view, showing the current state of the editor. ` +
-            `You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.`
-        )
+            `You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.`,
+        ),
       );
       root.append(quote);
 
@@ -123,7 +123,7 @@ function InitialEditorValuePlugin() {
         $createTextNode("some text").toggleFormat("bold"),
         $createTextNode(" with "),
         $createTextNode("different").toggleFormat("italic"),
-        $createTextNode(" formats.")
+        $createTextNode(" formats."),
       );
       root.append(paragraph);
 
@@ -133,31 +133,31 @@ function InitialEditorValuePlugin() {
         $createListItemNode().append(
           $createTextNode(`Visit the `),
           $createLinkNode("https://lexical.dev/").append(
-            $createTextNode("Lexical website")
+            $createTextNode("Lexical website"),
           ),
-          $createTextNode(` for documentation and more information.`)
+          $createTextNode(` for documentation and more information.`),
         ),
         $createListItemNode().append(
           $createTextNode(`Check out the code on our `),
           $createLinkNode("https://github.com/facebook/lexical").append(
-            $createTextNode("GitHub repository")
+            $createTextNode("GitHub repository"),
           ),
-          $createTextNode(`.`)
+          $createTextNode(`.`),
         ),
         $createListItemNode().append(
           $createTextNode(`Playground code can be found `),
           $createLinkNode(
-            "https://github.com/facebook/lexical/tree/main/packages/lexical-playground"
+            "https://github.com/facebook/lexical/tree/main/packages/lexical-playground",
           ).append($createTextNode("here")),
-          $createTextNode(`.`)
+          $createTextNode(`.`),
         ),
         $createListItemNode().append(
           $createTextNode(`Join our `),
           $createLinkNode("https://discord.com/invite/KmG4wQnnD9").append(
-            $createTextNode("Discord Server")
+            $createTextNode("Discord Server"),
           ),
-          $createTextNode(` and chat with the team.`)
-        )
+          $createTextNode(` and chat with the team.`),
+        ),
       );
       root.append(list);
     });
