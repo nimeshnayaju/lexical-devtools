@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { useComposer } from "./composer";
 import { $serializeEditor } from "@lexical-devtools/utils";
+import { LexicalEditor } from "lexical";
 
 const EXTENSION_ID = "dmbopeepjkdlplkjcjbnfiikajiddhnd";
 
@@ -14,7 +15,7 @@ export default function DevtoolsPlugin() {
 
 function DevtoolsPluginImpl() {
   const editor = useComposer();
-  const root = useRootElement();
+  const root = useRootElement(editor);
   const key = editor.getKey();
 
   useEffect(() => {
@@ -99,9 +100,7 @@ function DevtoolsPluginImpl() {
   return null;
 }
 
-function useRootElement(): HTMLElement | null {
-  const editor = useComposer();
-
+function useRootElement(editor: LexicalEditor): HTMLElement | null {
   const subscribe = useCallback(
     (onStoreChange: () => void) => {
       return editor.registerRootListener(onStoreChange);

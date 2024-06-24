@@ -5,9 +5,10 @@ import {
   SerializedLexicalNode,
   SerializedRootNode,
 } from "@lexical-devtools/utils";
-import TriangleRightIcon from "../icons/triangle-right-icon";
+import TriangleRightIcon from "./icons/triangle-right-icon";
 import {
   createContext,
+  DetailedHTMLProps,
   HTMLAttributes,
   KeyboardEvent,
   PointerEvent,
@@ -42,7 +43,11 @@ type LexicalHTMLElement = HTMLElement & {
   __getHTMLElement: (key: string) => HTMLElement | null;
 };
 
-interface NodeTreeProps extends HTMLAttributes<HTMLUListElement> {
+interface NodeTreeProps
+  extends Omit<
+    DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
+    "children"
+  > {
   id: string; // The id of the editor
 
   data: SerializedRootNode; // The (serialized) root node of the tree
@@ -310,16 +315,24 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
 
     const rect = rects[0];
 
-    await chrome.tabs.sendMessage(chrome.devtools.inspectedWindow.tabId, {
-      type: "CREATE_HIGHLIGHT",
-      payload: { rect },
-    });
+    try {
+      await chrome.tabs.sendMessage(chrome.devtools.inspectedWindow.tabId, {
+        type: "CREATE_HIGHLIGHT",
+        payload: { rect },
+      });
+    } catch (error) {
+      // `chrome.tabs.sendMessage` throws an error if the content script is not loaded yet
+    }
   }
 
   async function handleRemoveHighlight() {
-    await chrome.tabs.sendMessage(chrome.devtools.inspectedWindow.tabId, {
-      type: "REMOVE_HIGHLIGHT",
-    });
+    try {
+      await chrome.tabs.sendMessage(chrome.devtools.inspectedWindow.tabId, {
+        type: "REMOVE_HIGHLIGHT",
+      });
+    } catch (error) {
+      // `chrome.tabs.sendMessage` throws an error if the content script is not loaded yet
+    }
   }
 
   async function handlePointerEnter(event: PointerEvent<HTMLDivElement>) {
@@ -427,11 +440,6 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
     return traverse(tree);
   }
 
-  async function onSelectedChange(selected: string[]) {
-    handleCreateHighlight(selected[selected.length - 1]);
-    setSelected(selected);
-  }
-
   function getFirstChildNode(): SerializedLexicalNode | null {
     const node = getNode(tree, id);
     if (node === null) return null;
@@ -449,13 +457,13 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
 
       const previous = getPreviousNode();
       if (previous === null) return;
-      await onSelectedChange([previous.key]);
+      setSelected([previous.key]);
     } else if (event.key === "ArrowDown") {
       event.preventDefault();
       const next = getNextNode();
       if (next === null) return;
 
-      await onSelectedChange([next.key]);
+      setSelected([next.key]);
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
 
@@ -473,7 +481,7 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
       // If the node is collapsed, we select the parent node if it exists
       const parent = getParentNode();
       if (parent === null) return;
-      await onSelectedChange([parent.key]);
+      setSelected([parent.key]);
     } else if (event.key === "ArrowRight") {
       event.preventDefault();
 
@@ -487,7 +495,7 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
       else {
         const child = getFirstChildNode();
         if (child === null) return;
-        await onSelectedChange([child.key]);
+        setSelected([child.key]);
       }
     }
   }
@@ -534,6 +542,8 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       onKeyDown={handleKeyDown}
+      onFocus={() => handleCreateHighlight(id)}
+      onBlur={() => handleRemoveHighlight()}
     >
       {children}
     </TreeView.ItemText>

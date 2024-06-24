@@ -6,8 +6,8 @@ import {
   SerializedSelection,
 } from "@lexical-devtools/utils";
 import * as Collapsible from "./collapsible";
-import TriangleRightIcon from "../icons/triangle-right-icon";
-import TextSelectionOffIcon from "../icons/text-selection-off-icon";
+import TriangleRightIcon from "./icons/triangle-right-icon";
+import TextSelectionOffIcon from "./icons/text-selection-off-icon";
 
 const TreeContext = createContext<SerializedRootNode | null>(null);
 
