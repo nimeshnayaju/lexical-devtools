@@ -93,7 +93,7 @@ function RangeTable({
     <Collapsible.Root open={open} onOpenChange={setOpen} className="w-full">
       <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center bg-[rgb(238_242_249)] dark:bg-[rgb(42_44_48)] border-b border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] h-[25px]">
         <TriangleRightIcon className="group-data-[state=open]:rotate-90 h-4 w-4" />
-        <span className="flex items-center gap-2">Range</span>
+        <span className="flex items-center gap-2 text-[11px]">Range</span>
       </Collapsible.Trigger>
 
       <Collapsible.Content className="w-full bg-[rgb(255_255_255)] dark:bg-[rgb(40_40_40)] text-[11px]">
@@ -165,7 +165,7 @@ function NodesTable({
     <Collapsible.Root open={open} onOpenChange={setOpen} className="w-full">
       <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center bg-[rgb(238_242_249)] dark:bg-[rgb(42_44_48)] border-b border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] h-[25px]">
         <TriangleRightIcon className="group-data-[state=open]:rotate-90 h-4 w-4" />
-        <span className="flex items-center gap-2">Nodes</span>
+        <span className="flex items-center gap-2 text-[11px]">Nodes</span>
       </Collapsible.Trigger>
 
       <Collapsible.Content className="w-full bg-[rgb(255_255_255)] dark:bg-[rgb(40_40_40)] text-[11px]">
@@ -173,7 +173,7 @@ function NodesTable({
           <thead className="border-b border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
             <tr>
               <th className="px-2 font-medium">Key</th>
-              <th className="px-2 font-medium">Class</th>
+              <th className="px-2 font-medium">Type</th>
             </tr>
           </thead>
           <tbody className="[&_tr:last-child]:border-0">
@@ -187,7 +187,7 @@ function NodesTable({
                     <span className="px-2">{node.key}</span>
                   </td>
 
-                  <td className="font-light px-2 py-[1px] p-0">{node.class}</td>
+                  <td className="font-light px-2 py-[1px] p-0">{node.type}</td>
                 </tr>
               );
             })}
@@ -210,7 +210,7 @@ function getNodeByKey(
 ): SerializedLexicalNode | null {
   if (node.key === key) return node;
 
-  if (node.type === "element" || node.type === "root") {
+  if (node.group === "element" || node.group === "root") {
     for (const child of node.children) {
       const result = getNodeByKey(child, key);
       // If a matching child was found, return the child
@@ -249,7 +249,7 @@ function getAncestors(
 ): string[] | null {
   if (node.key === key) return [];
 
-  if (node.type === "element" || node.type === "root") {
+  if (node.group === "element" || node.group === "root") {
     for (const child of node.children) {
       const ancestors = getAncestors(child, key);
       if (ancestors !== null) return [node.key, ...ancestors];

@@ -83,7 +83,7 @@ export default function NodeTree(props: NodeTreeProps) {
       for (const child of node.children) {
         if (child.key === key) return true;
 
-        if (child.type === "root" || child.type === "element") {
+        if (child.group === "root" || child.group === "element") {
           if (isNodeVisible(child, key)) return true;
         }
       }
@@ -97,7 +97,7 @@ export default function NodeTree(props: NodeTreeProps) {
   ): SerializedLexicalNode {
     let lastVisibleNode = node;
 
-    if (node.type === "root" || node.type === "element") {
+    if (node.group === "root" || node.group === "element") {
       if (!collapsed.includes(node.key)) {
         for (const child of node.children) {
           const last = getLastVisibleNode(child);
@@ -201,16 +201,22 @@ function ElementNodeTreeItem({
           />
         </TreeView.Trigger>
 
-        <div className="flex flex-row gap-1 items-center">
-          <span>{node.class}</span>
+        <div className="flex flex-row gap-1.5 items-center">
+          <span>{node.type}</span>
+
+          {node.group === "element" && (
+            <span className="inline-flex font-mono items-center rounded-full text-[8px] bg-[rgb(242_242_242)] dark:bg-[rgb(60_60_60)] px-[4px] border py-0 border-[rgb(199_199_199)] dark:border-[rgb(56_100_135)]">
+              {node.key}
+            </span>
+          )}
         </div>
       </NodeTreeItemText>
 
       <TreeView.Tree>
         {node.children.map((child) => {
-          if (child.type === "element") {
+          if (child.group === "element") {
             return <ElementNodeTreeItem key={child.key} node={child} />;
-          } else if (child.type === "text") {
+          } else if (child.group === "text") {
             return <TextNodeTreeItem key={child.key} node={child} />;
           } else {
             return <MiscllaneousNodeTreeItem key={child.key} node={child} />;
@@ -226,9 +232,15 @@ function TextNodeTreeItem({ node }: { node: SerializedTextNode }) {
     <TreeView.Item value={node.key}>
       <NodeTreeItemText
         id={node.key}
-        className="ps-[calc(var(--depth)*1rem+16px+4px)]"
+        className="ps-[calc(var(--depth)*1rem+4px+16px+4px)]"
       >
-        {node.text}
+        <span className="inline-flex items-center gap-1.5">
+          {node.text}
+
+          <span className="inline-flex font-mono items-center rounded-full text-[8px] bg-[rgb(242_242_242)] dark:bg-[rgb(60_60_60)] px-[4px] border py-0 border-[rgb(199_199_199)] dark:border-[rgb(56_100_135)]">
+            {node.key}
+          </span>
+        </span>
       </NodeTreeItemText>
     </TreeView.Item>
   );
@@ -241,7 +253,13 @@ function MiscllaneousNodeTreeItem({ node }: { node: SerializedLexicalNode }) {
         id={node.key}
         className="ps-[calc(var(--depth)*1rem+16px+4px)]"
       >
-        {node.class}
+        <span className="inline-flex items-center gap-1.5">
+          {node.type}
+
+          <span className="inline-flex font-mono items-center rounded-full text-[8px] bg-[rgb(242_242_242)] dark:bg-[rgb(60_60_60)] px-[4px] border py-0 border-[rgb(199_199_199)] dark:border-[rgb(56_100_135)]">
+            {node.key}
+          </span>
+        </span>
       </NodeTreeItemText>
     </TreeView.Item>
   );
@@ -363,7 +381,7 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
       }
 
       if (
-        (node.type === "root" || node.type === "element") &&
+        (node.group === "root" || node.group === "element") &&
         !collapsed.includes(node.key)
       ) {
         for (const child of node.children) {
@@ -394,7 +412,7 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
       previous = node;
 
       if (
-        (node.type === "root" || node.type === "element") &&
+        (node.group === "root" || node.group === "element") &&
         !collapsed.includes(node.key)
       ) {
         for (const child of node.children) {
@@ -421,7 +439,7 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
         return parent;
       }
 
-      if (node.type === "root" || node.type === "element") {
+      if (node.group === "root" || node.group === "element") {
         const previous = parent;
         parent = node;
 
@@ -443,7 +461,7 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
   function getFirstChildNode(): SerializedLexicalNode | null {
     const node = getNode(tree, id);
     if (node === null) return null;
-    if (node.type !== "root" && node.type !== "element") return null;
+    if (node.group !== "root" && node.group !== "element") return null;
 
     return node.children[0] ?? null;
   }
@@ -470,7 +488,7 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
       const node = getNode(tree, id);
       if (node === null) return;
 
-      if (node.type === "root" || node.type === "element") {
+      if (node.group === "root" || node.group === "element") {
         const isCollapsed = collapsed.includes(id);
         // If the node is expanded, we collapse it
         if (!isCollapsed) {
@@ -535,7 +553,7 @@ function NodeTreeItemText(props: TreeView.ItemTextProps & { id: string }) {
       {...itemTextProps}
       className={classNames(
         className,
-        "flex flex-row gap-1 items-center select-none outline-none",
+        "flex flex-row gap-1 items-center select-none outline-none pe-2",
         "data-[selected]:bg-[rgb(242_242_242)] dark:data-[selected]:bg-[rgb(60_60_60)] data-[selected]:focus:bg-[rgb(214_226_251)] dark:data-[selected]:dark:focus:bg-[rgb(29_73_115)] text-black dark:text-white",
         "hover:bg-[rgb(242_242_242)] dark:hover:bg-[rgb(60_60_60)]"
       )}
@@ -592,7 +610,7 @@ function getNode(
 ): SerializedLexicalNode | null {
   if (tree.key === key) return tree;
 
-  if (tree.type === "root" || tree.type === "element") {
+  if (tree.group === "root" || tree.group === "element") {
     for (const child of tree.children) {
       const node = getNode(child, key);
       if (node !== null) return node;
