@@ -164,9 +164,7 @@ export class LinkNode extends ElementNode {
     };
   }
 
-  static importJSON(
-    serializedNode: SerializedLinkNode | SerializedAutoLinkNode
-  ): LinkNode {
+  static importJSON(serializedNode: SerializedLinkNode): LinkNode {
     const node = $createLinkNode(serializedNode.url, {
       rel: serializedNode.rel,
       target: serializedNode.target,
