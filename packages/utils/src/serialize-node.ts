@@ -25,9 +25,9 @@ export default function $serializeNode(
   if ($isRootNode(node)) {
     const children = node.getChildren().map((child) => $serializeNode(child));
     return {
-      type: "root",
+      group: "root",
       key: node.getKey(),
-      class: node.constructor.name,
+      type: node.getType(),
       children,
       meta,
     };
@@ -36,9 +36,9 @@ export default function $serializeNode(
   if ($isElementNode(node)) {
     const children = node.getChildren().map((child) => $serializeNode(child));
     return {
-      type: "element",
+      group: "element",
       key: node.getKey(),
-      class: node.constructor.name,
+      type: node.getType(),
       children,
       meta,
     };
@@ -46,62 +46,62 @@ export default function $serializeNode(
 
   if ($isDecoratorNode(node)) {
     return {
-      type: "decorator",
+      group: "decorator",
       key: node.getKey(),
-      class: node.constructor.name,
+      type: node.getType(),
       meta,
     };
   }
 
   if ($isTextNode(node)) {
     return {
-      type: "text",
+      group: "text",
       key: node.getKey(),
-      class: node.constructor.name,
+      type: node.getType(),
       text: node.getTextContent(),
       meta,
     };
   }
 
   return {
-    type: "unknown",
+    group: "unknown",
     key: node.getKey(),
-    class: node.constructor.name,
+    type: node.getType(),
     meta,
   };
 }
 
 export interface BaseSerializedNode {
   key: string;
-  class: string;
+  type: string;
   meta: JsonObject;
 }
 
 export interface SerializedRootNode extends BaseSerializedNode {
-  type: "root";
+  group: "root";
   children: SerializedLexicalNode[];
 }
 
 export interface SerializedElementNode extends BaseSerializedNode {
-  type: "element";
+  group: "element";
   children: SerializedLexicalNode[];
 }
 
 export interface SerializedTextNode extends BaseSerializedNode {
-  type: "text";
+  group: "text";
   text: string;
 }
 
 export interface SerializedDecoratorNode extends BaseSerializedNode {
-  type: "decorator";
+  group: "decorator";
 }
 
 export interface SerializedLineBreakNode extends BaseSerializedNode {
-  type: "line-break";
+  group: "line-break";
 }
 
 export interface SerializedUnknownNode extends BaseSerializedNode {
-  type: "unknown";
+  group: "unknown";
 }
 
 export type SerializedLexicalNode =
