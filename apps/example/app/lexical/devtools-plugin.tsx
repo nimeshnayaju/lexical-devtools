@@ -5,15 +5,15 @@ import { LexicalEditor } from "lexical";
 
 const EXTENSION_ID = "dmbopeepjkdlplkjcjbnfiikajiddhnd";
 
-export default function DevtoolsPlugin() {
+export default function DevToolsPlugin() {
   if (typeof chrome === "undefined") return null;
 
   if (chrome.runtime === undefined) return null;
 
-  return <DevtoolsPluginImpl />;
+  return <DevToolsPluginImpl />;
 }
 
-function DevtoolsPluginImpl() {
+function DevToolsPluginImpl() {
   const editor = useComposer();
   const root = useRootElement(editor);
   const key = editor.getKey();

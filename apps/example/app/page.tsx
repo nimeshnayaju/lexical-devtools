@@ -8,24 +8,20 @@ import HistoryPlugin from "./lexical/history-plugin";
 import Placeholder from "./lexical/placeholder";
 import RichTextPlugin from "./lexical/rich-text-plugin";
 import { $getRoot, $createParagraphNode, $createTextNode } from "lexical";
-import {
-  $createHeadingNode,
-  $createQuoteNode,
-  HeadingNode,
-  QuoteNode,
-} from "@lexical/rich-text";
-import {
-  ListNode,
-  ListItemNode,
-  $createListNode,
-  $createListItemNode,
-} from "@lexical/list";
-import DevtoolsPlugin from "./lexical/devtools-plugin";
+import { $createHeadingNode, HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { ListNode, ListItemNode } from "@lexical/list";
+import DevToolsPlugin from "./lexical/devtools-plugin";
 import { $createLinkNode, AutoLinkNode, LinkNode } from "@lexical/link";
+import {
+  $createCodeHighlightNode,
+  $createCodeNode,
+  CodeHighlightNode,
+  CodeNode,
+} from "@lexical/code";
 
 export default function Home() {
   return (
-    <main className="h-screen w-[875px] m-auto p-8">
+    <main className="min-h-screen flex flex-col max-w-[935px] m-auto p-14">
       <Composer
         config={{
           namespace: "devtools",
@@ -36,6 +32,8 @@ export default function Home() {
             ListItemNode,
             LinkNode,
             AutoLinkNode,
+            CodeNode,
+            CodeHighlightNode,
           ],
           theme: {
             text: {
@@ -43,7 +41,9 @@ export default function Home() {
               italic: "italic",
               underline: "underline",
               strikethrough: "line-through",
+              code: "font-mono bg-gray-100 dark:bg-gray-800 p-1 rounded text-sm",
             },
+            quote: "border-l-4 border-gray-300 dark:border-gray-700 pl-4 mb-4",
             heading: {
               h1: "text-4xl font-bold mb-4",
               h2: "text-3xl font-bold mb-4",
@@ -53,38 +53,35 @@ export default function Home() {
               h6: "text-base font-bold mb-4",
             },
             paragraph: "text-base mb-4",
-            quote: "text-base text-gray-500 border-l-4 pl-4 mb-4",
-            code: "text-base font-mono",
             link: "text-blue-500 underline",
             list: {
-              ul: "list-disc",
-              ol: "list-decimal",
-              listitem: "ml-4",
+              ul: "list-disc mb-4",
+              ol: "list-decimal mb-4",
+              listitem: "ml-4 mb-1",
             },
+            code: "block font-mono bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded text-sm mb-4",
           },
           onError: (error) => {
             console.error(error);
           },
         }}
       >
-        <div className="flex flex-row relative text-base h-full w-full flex-grow overflow-scroll">
-          <div className="relative w-full">
-            <ContentEditable className="h-full w-full outline-none" />
+        <div className="relative text-base flex-1 flex">
+          <ContentEditable className="outline-none flex-1" />
 
-            <Placeholder>
-              <div className="pointer-events-none absolute top-0 left-0 text-gray-400 dark:text-gray-500">
-                Start typing...
-              </div>
-            </Placeholder>
+          <Placeholder>
+            <div className="pointer-events-none absolute top-0 left-0 text-gray-400 dark:text-gray-500">
+              Start typing...
+            </div>
+          </Placeholder>
 
-            <DevtoolsPlugin />
+          <DevToolsPlugin />
 
-            <DecoratorsPlugin />
-            <RichTextPlugin />
-            <HistoryPlugin />
+          <DecoratorsPlugin />
+          <RichTextPlugin />
+          <HistoryPlugin />
 
-            <InitialEditorValuePlugin />
-          </div>
+          <InitialEditorValuePlugin />
         </div>
       </Composer>
     </main>
@@ -98,68 +95,91 @@ function InitialEditorValuePlugin() {
     editor.update(() => {
       const root = $getRoot();
 
-      // Heading
-      const heading = $createHeadingNode("h1");
-      heading.append($createTextNode("Lexical developer tools"));
-      root.append(heading);
+      root.append(
+        $createHeadingNode("h1").append($createTextNode("Lexical DevTools"))
+      );
 
-      // Quote
-      const quote = $createQuoteNode();
-      quote.append(
-        $createTextNode(
-          `In case you were wondering what the black box at the bottom is – it's the debug view, showing the current state of the editor. ` +
-            `You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.`
+      root.append(
+        $createParagraphNode().append(
+          $createTextNode(
+            `Lexical DevTools is a browser devtools extension that lets you inspect your Lexical.js editor state.`
+          )
         )
       );
-      root.append(quote);
 
-      // Paragraph
-      const paragraph = $createParagraphNode();
-      paragraph.append(
-        $createTextNode("The playground is a demo environment built with "),
-        $createTextNode("@lexical/react").toggleFormat("code"),
-        $createTextNode("."),
-        $createTextNode(" Try typing in "),
-        $createTextNode("some text").toggleFormat("bold"),
-        $createTextNode(" with "),
-        $createTextNode("different").toggleFormat("italic"),
-        $createTextNode(" formats.")
-      );
-      root.append(paragraph);
-
-      // List
-      const list = $createListNode("bullet");
-      list.append(
-        $createListItemNode().append(
-          $createTextNode(`Visit the `),
-          $createLinkNode("https://lexical.dev/").append(
-            $createTextNode("Lexical website")
-          ),
-          $createTextNode(` for documentation and more information.`)
-        ),
-        $createListItemNode().append(
-          $createTextNode(`Check out the code on our `),
-          $createLinkNode("https://github.com/facebook/lexical").append(
-            $createTextNode("GitHub repository")
-          ),
-          $createTextNode(`.`)
-        ),
-        $createListItemNode().append(
-          $createTextNode(`Playground code can be found `),
+      root.append(
+        $createParagraphNode().append(
+          $createTextNode(`To get started, install `),
           $createLinkNode(
-            "https://github.com/facebook/lexical/tree/main/packages/lexical-playground"
-          ).append($createTextNode("here")),
-          $createTextNode(`.`)
-        ),
-        $createListItemNode().append(
-          $createTextNode(`Join our `),
-          $createLinkNode("https://discord.com/invite/KmG4wQnnD9").append(
-            $createTextNode("Discord Server")
-          ),
-          $createTextNode(` and chat with the team.`)
+            "https://chromewebstore.google.com/detail/lexical-devtools/dmbopeepjkdlplkjcjbnfiikajiddhnd"
+          ).append($createTextNode("Lexical Developer Tools")),
+          $createTextNode(
+            " from the Chrome Web Store. After installation, you can inspect the editor state of this page by opening the Chrome DevTools and navigating to the Lexical tab."
+          )
         )
       );
-      root.append(list);
+
+      root.append(
+        $createParagraphNode().append(
+          $createTextNode(
+            "To inspect the editor state of the Lexical.js editor in your React project, install "
+          ),
+          $createTextNode("@lexical-devtools/react").toggleFormat("code"),
+          $createTextNode(".")
+        )
+      );
+
+      root.append(
+        $createCodeNode().append(
+          $createCodeHighlightNode("npm i @lexical-devtools/react")
+        )
+      );
+
+      root.append(
+        $createParagraphNode().append(
+          $createTextNode("Next, import "),
+          $createTextNode("DevtoolsPlugin").toggleFormat("code"),
+          $createTextNode(" into your "),
+          $createTextNode("LexicalComposer").toggleFormat("code"),
+          $createTextNode(" component.")
+        )
+      );
+
+      root.append(
+        $createCodeNode("javascript").append(
+          $createCodeHighlightNode(
+            `import { LexicalComposer } from "@lexical/react/LexicalComposer";\n`
+          ),
+          $createCodeHighlightNode(
+            `import DevtoolsPlugin from "@lexical/react";\n\n`
+          ),
+          $createCodeHighlightNode(`export default function Page() {\n`),
+          $createCodeHighlightNode(`  const config = {\n`),
+          $createCodeHighlightNode(`    // ...\n`),
+          $createCodeHighlightNode(`  };\n\n`),
+          $createCodeHighlightNode(`  return (\n`),
+          $createCodeHighlightNode(
+            `    <LexicalComposer initialConfig={config}>\n`
+          ),
+          $createCodeHighlightNode(`      // ...\n`),
+          $createCodeHighlightNode(`      <DevtoolsPlugin />\n`),
+          $createCodeHighlightNode(`    </LexicalComposer>\n`),
+          $createCodeHighlightNode(`  );\n`),
+          $createCodeHighlightNode(`}\n`)
+        )
+      );
+
+      root.append(
+        $createParagraphNode().append(
+          $createTextNode(
+            "If you find Lexical DevTools helpful, consider giving the project a star on "
+          ),
+          $createLinkNode(
+            "https://github.com/nimeshnayaju/lexical-devtools"
+          ).append($createTextNode("GitHub")),
+          $createTextNode(".")
+        )
+      );
     });
 
     return () => {
