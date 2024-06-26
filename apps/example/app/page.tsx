@@ -11,7 +11,7 @@ import { $getRoot, $createParagraphNode, $createTextNode } from "lexical";
 import { $createHeadingNode, HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { ListNode, ListItemNode } from "@lexical/list";
 import DevToolsPlugin from "./lexical/devtools-plugin";
-import { $createLinkNode, AutoLinkNode, LinkNode } from "@lexical/link";
+import { $createLinkNode, LinkNode } from "./lexical/link/link-node";
 import {
   $createCodeHighlightNode,
   $createCodeNode,
@@ -31,7 +31,6 @@ export default function Home() {
             ListNode,
             ListItemNode,
             LinkNode,
-            AutoLinkNode,
             CodeNode,
             CodeHighlightNode,
           ],
@@ -53,7 +52,7 @@ export default function Home() {
               h6: "text-base font-bold mb-4",
             },
             paragraph: "text-base mb-4",
-            link: "text-blue-500 underline",
+            link: "text-blue-500 underline pointer-events-none after:content-['↗'] after:cursor-pointer after:font-bold after:pointer-events-auto after:inline-block after:w-[20px] after:text-center",
             list: {
               ul: "list-disc mb-4",
               ol: "list-decimal mb-4",
@@ -96,7 +95,9 @@ function InitialEditorValuePlugin() {
       const root = $getRoot();
 
       root.append(
-        $createHeadingNode("h1").append($createTextNode("Lexical DevTools"))
+        $createHeadingNode("h1").append(
+          $createTextNode("Lexical developer tools")
+        )
       );
 
       root.append(
@@ -111,7 +112,11 @@ function InitialEditorValuePlugin() {
         $createParagraphNode().append(
           $createTextNode(`To get started, install `),
           $createLinkNode(
-            "https://chromewebstore.google.com/detail/lexical-devtools/dmbopeepjkdlplkjcjbnfiikajiddhnd"
+            "https://chromewebstore.google.com/detail/lexical-devtools/dmbopeepjkdlplkjcjbnfiikajiddhnd",
+            {
+              target: "_blank",
+              rel: "noopener noreferrer",
+            }
           ).append($createTextNode("Lexical Developer Tools")),
           $createTextNode(
             " from the Chrome Web Store. After installation, you can inspect the editor state of this page by opening the Chrome DevTools and navigating to the Lexical tab."

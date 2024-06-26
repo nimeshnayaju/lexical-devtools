@@ -1,4 +1,4 @@
-# Lexical DevTools
+# Lexical developer tools
 
 Lexical DevTools is a browser devtools extension that lets you inspect your Lexical.js editor state.
 
