@@ -99,10 +99,10 @@ export default function App() {
   if (state.error !== undefined) {
     return (
       <div className="h-screen bg-white dark:bg-[rgb(40_40_40)] text-black dark:text-white flex flex-col items-center justify-center p-4 gap-2">
-        <h1 className="font-semibold text-sm">Unable to load editors!</h1>
+        <h1 className="font-semibold text-sm">Unable to load editors</h1>
         <p className="text-xs text-[rgb(71_71_71)] dark:text-[rgb(143_143_143)]">
-          Developer tools can only access Lexical editors on React applications
-          that are running on a localhost environment.
+          Lexical DevTools requires your applications to be running on a
+          localhost environment.
         </p>
       </div>
     );

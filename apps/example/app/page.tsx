@@ -156,7 +156,7 @@ function InitialEditorValuePlugin() {
             `import { LexicalComposer } from "@lexical/react/LexicalComposer";\n`
           ),
           $createCodeHighlightNode(
-            `import DevtoolsPlugin from "@lexical/react";\n\n`
+            `import DevToolsPlugin from "@lexical-devtools/react";\n\n`
           ),
           $createCodeHighlightNode(`export default function Page() {\n`),
           $createCodeHighlightNode(`  const config = {\n`),
@@ -167,7 +167,7 @@ function InitialEditorValuePlugin() {
             `    <LexicalComposer initialConfig={config}>\n`
           ),
           $createCodeHighlightNode(`      // ...\n`),
-          $createCodeHighlightNode(`      <DevtoolsPlugin />\n`),
+          $createCodeHighlightNode(`      <DevToolsPlugin />\n`),
           $createCodeHighlightNode(`    </LexicalComposer>\n`),
           $createCodeHighlightNode(`  );\n`),
           $createCodeHighlightNode(`}\n`)

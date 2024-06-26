@@ -22,7 +22,7 @@
   },
   "peerDependencies": {
     "@lexical/react": "^0.16.0",
-    "react": ">=17.x"
+    "react": ">=18.x"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",

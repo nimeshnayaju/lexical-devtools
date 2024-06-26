@@ -8,6 +8,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.6",
+    "changeset": "^0.2.6",
     "prettier": "^3.2.5",
     "turbo": "latest"
   },
