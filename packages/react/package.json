@@ -1,0 +1,33 @@
+{
+  "name": "@lexical-devtools/react",
+  "description": "",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@lexical-devtools/utils": "*"
+  },
+  "peerDependencies": {
+    "@lexical/react": "^0.16.0",
+    "react": ">=17.x"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/react": "^18.3.2",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
+  }
+}
