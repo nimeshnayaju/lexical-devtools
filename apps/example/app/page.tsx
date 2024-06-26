@@ -52,7 +52,7 @@ export default function Home() {
               h6: "text-base font-bold mb-4",
             },
             paragraph: "text-base mb-4",
-            link: "text-blue-500 underline pointer-events-none after:content-['↗'] after:cursor-pointer after:font-bold after:pointer-events-auto after:inline-block after:w-[20px] after:text-center",
+            link: "text-blue-500 underline pointer-events-none after:content-['↗'] after:cursor-pointer after:font-bold after:pointer-events-auto",
             list: {
               ul: "list-disc mb-4",
               ol: "list-decimal mb-4",
