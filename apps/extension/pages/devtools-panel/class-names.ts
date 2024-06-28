@@ -1,4 +1,4 @@
-export function classNames(
+export default function classNames(
   ...args: (string | number | boolean | undefined | null)[]
 ) {
   return args
