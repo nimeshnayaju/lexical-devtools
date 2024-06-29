@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "version": "0.1.0",
   "name": "lexical-devtools",
-  "description": "Lexical developer tools",
+  "description": "Lexical DevTools",
   "permissions": ["scripting", "activeTab", "webNavigation", "tabs"],
   "host_permissions": [
     "*://localhost/*",

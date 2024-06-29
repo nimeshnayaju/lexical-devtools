@@ -4,4 +4,4 @@
 
 ### Minor Changes
 
-- - Export `DevToolsPlugin` component.
+- Export `DevToolsPlugin` component.
