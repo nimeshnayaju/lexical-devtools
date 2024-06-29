@@ -1,5 +1,5 @@
 import * as TreeView from "./tree-view";
-import {
+import type {
   SerializedElementNode,
   SerializedTextNode,
   SerializedLexicalNode,
@@ -16,7 +16,7 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { classNames } from "./class-names";
+import classNames from "./class-names";
 
 const TreeContext = createContext<SerializedRootNode | null>(null);
 
@@ -192,7 +192,7 @@ function ElementNodeTreeItem({
     <TreeView.Item value={node.key}>
       <NodeTreeItemText
         id={node.key}
-        className="ps-[calc(var(--depth)*1rem+4px)]"
+        className="ps-[calc(var(--depth)*1rem+4px)] min-h-[18px] py-[2px]"
       >
         <TreeView.Trigger className="group">
           <TriangleRightIcon
@@ -232,7 +232,7 @@ function TextNodeTreeItem({ node }: { node: SerializedTextNode }) {
     <TreeView.Item value={node.key}>
       <NodeTreeItemText
         id={node.key}
-        className="ps-[calc(var(--depth)*1rem+4px+16px+4px)]"
+        className="ps-[calc(var(--depth)*1rem+4px+16px+4px)] min-h-[18px] py-[2px]"
       >
         <span className="inline-flex items-center gap-1.5">
           {node.text}
@@ -251,7 +251,7 @@ function MiscllaneousNodeTreeItem({ node }: { node: SerializedLexicalNode }) {
     <TreeView.Item value={node.key}>
       <NodeTreeItemText
         id={node.key}
-        className="ps-[calc(var(--depth)*1rem+16px+4px)]"
+        className="ps-[calc(var(--depth)*1rem+16px+4px)] min-h-[18px] py-[2px]"
       >
         <span className="inline-flex items-center gap-1.5">
           {node.type}

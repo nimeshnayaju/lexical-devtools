@@ -5,13 +5,14 @@ import {
   useEditors,
   useRevalidateEditors,
 } from "./root-store-provider";
-import { SerializedEditorState } from "@lexical-devtools/utils";
+import type { SerializedEditorState } from "@lexical-devtools/utils";
 import NodeTree from "./node-tree";
 import Separator from "./separator";
 import ReloadIcon from "./icons/reload-icon";
 import PanelRightCloseIcon from "./icons/panel-right-close-icon";
 import PanelRightOpenIcon from "./icons/panel-right-open-icon";
 import SelectionPanel from "./selection-panel";
+import AlertCircledIcon from "./icons/alert-circled-icon";
 
 export default function App() {
   const revalidate = useRevalidateEditors();
@@ -91,18 +92,21 @@ export default function App() {
   if (state === undefined || state.isLoading) {
     return (
       <div className="h-screen bg-white dark:bg-[rgb(40_40_40)] text-black dark:text-white flex items-center justify-center p-4">
-        Loading...
+        Loading…
       </div>
     );
   }
 
   if (state.error !== undefined) {
     return (
-      <div className="h-screen bg-white dark:bg-[rgb(40_40_40)] text-black dark:text-white flex flex-col items-center justify-center p-4 gap-2">
-        <h1 className="font-semibold text-sm">Unable to load editors!</h1>
-        <p className="text-xs text-[rgb(71_71_71)] dark:text-[rgb(143_143_143)]">
-          Developer tools can only access Lexical editors on React applications
-          that are running on a localhost environment.
+      <div className="h-screen bg-white dark:bg-[rgb(40_40_40)] text-black dark:text-white flex flex-col items-center justify-between gap-2">
+        <div className="flex flex-1 flex-col items-center justify-center gap-2">
+          <AlertCircledIcon className="w-7 h-7" />
+          <h1 className="font-semibold text-sm">Could not load editors</h1>
+        </div>
+        <p className="text-[11px] w-full flex items-center justify-center p-4 text-[rgb(71_71_71)] dark:text-[rgb(143_143_143)] border-t border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
+          Lexical DevTools can only access Lexical editors on applications that
+          are running on a localhost environment.
         </p>
       </div>
     );
@@ -227,7 +231,7 @@ function Panel({ editors }: { editors: SerializedEditorState[] }) {
 
       {/* Sidebar */}
       {showSidebar && (
-        <div className="flex flex-col h-full basis-[280px] border-l border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
+        <div className="flex flex-col h-full basis-[280px] border-l border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] text-[11px]">
           <div className="h-[25px] flex w-full items-center justify-center border-b bg-[rgb(238_242_249)] dark:bg-[rgb(60_60_60)] border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] font-medium">
             Selection
           </div>

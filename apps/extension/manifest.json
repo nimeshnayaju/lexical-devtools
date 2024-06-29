@@ -1,13 +1,16 @@
 {
   "manifest_version": 3,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "name": "lexical-devtools",
   "description": "Lexical developer tools",
   "permissions": ["scripting", "activeTab", "webNavigation", "tabs"],
-  "host_permissions": ["*://localhost/*"],
+  "host_permissions": [
+    "*://localhost/*",
+    "https://lexical-devtools.vercel.app/*"
+  ],
   "content_scripts": [
     {
-      "matches": ["*://localhost/*"],
+      "matches": ["*://localhost/*", "https://lexical-devtools.vercel.app/*"],
       "js": ["./content/main.tsx"]
     }
   ],
@@ -15,7 +18,7 @@
     "service_worker": "./background.ts"
   },
   "externally_connectable": {
-    "matches": ["*://localhost/*"]
+    "matches": ["*://localhost/*", "https://lexical-devtools.vercel.app/*"]
   },
   "devtools_page": "./devtools/index.html",
   "icons": {

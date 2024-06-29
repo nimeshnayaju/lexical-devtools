@@ -1,9 +1,8 @@
 {
-  "name": "@lexical-devtools/utils",
-  "description": "Developer tools for Lexical.js",
-  "version": "0.0.0",
+  "name": "@lexical-devtools/react",
+  "description": "React plugin for Lexical DevTools",
+  "version": "0.1.0",
   "license": "MIT",
-  "private": true,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -18,12 +17,17 @@
     "build": "tsup",
     "dev": "tsup --watch"
   },
+  "dependencies": {
+    "@lexical-devtools/utils": "*"
+  },
   "peerDependencies": {
-    "lexical": "^0.16.0"
+    "@lexical/react": "^0.16.0",
+    "react": ">=18.x"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
-    "tsup": "^8.1.0",
+    "@types/react": "^18.3.2",
+    "tsup": "^8.0.2",
     "typescript": "^5.4.5"
   }
 }

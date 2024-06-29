@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useSyncExternalStore } from "react";
-import { useComposer } from "./composer";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $serializeEditor } from "@lexical-devtools/utils";
 import { LexicalEditor } from "lexical";
 
 const EXTENSION_ID = "dmbopeepjkdlplkjcjbnfiikajiddhnd";
 
 export default function DevToolsPlugin() {
+  if (process.env.NODE_ENV === "production") return null;
+
   if (typeof chrome === "undefined") return null;
 
   if (chrome.runtime === undefined) return null;
@@ -14,7 +16,7 @@ export default function DevToolsPlugin() {
 }
 
 function DevToolsPluginImpl() {
-  const editor = useComposer();
+  const [editor] = useLexicalComposerContext();
   const root = useRootElement(editor);
   const key = editor.getKey();
 
