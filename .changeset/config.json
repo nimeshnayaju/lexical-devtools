@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["example", "extension"]
+  "ignore": ["example", "lexical-devtools-extension"]
 }

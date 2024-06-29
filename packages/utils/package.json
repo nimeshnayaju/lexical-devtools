@@ -1,8 +1,9 @@
 {
   "name": "@lexical-devtools/utils",
   "description": "Developer tools for Lexical.js",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "license": "MIT",
+  "private": true,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
