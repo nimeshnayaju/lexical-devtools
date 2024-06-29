@@ -6,8 +6,8 @@ import {
   SerializedSelection,
 } from "@lexical-devtools/utils";
 import * as Collapsible from "./collapsible";
-import TriangleRightIcon from "./icons/triangle-right-icon";
 import TextSelectionOffIcon from "./icons/text-selection-off-icon";
+import ChevronRightIcon from "./icons/chevron-right-icon";
 
 const TreeContext = createContext<SerializedRootNode | null>(null);
 
@@ -91,31 +91,31 @@ function RangeTable({
 
   return (
     <Collapsible.Root open={open} onOpenChange={setOpen} className="w-full">
-      <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center bg-[rgb(238_242_249)] dark:bg-[rgb(42_44_48)] border-b border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] h-[25px]">
-        <TriangleRightIcon className="group-data-[state=open]:rotate-90 h-4 w-4" />
-        <span className="flex items-center gap-2 text-[11px]">Range</span>
+      <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center justify-between bg-[rgb(238_242_249)] dark:bg-[rgb(42_44_48)] border-b border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] h-[25px] px-2">
+        <span>Range</span>
+        <ChevronRightIcon className="group-data-[state=open]:rotate-90 h-3 w-3 stroke-current stroke-1" />
       </Collapsible.Trigger>
 
-      <Collapsible.Content className="w-full bg-[rgb(255_255_255)] dark:bg-[rgb(40_40_40)] text-[11px]">
+      <Collapsible.Content className="w-full bg-[rgb(255_255_255)] dark:bg-[rgb(40_40_40)]">
         {/* Anchor */}
         <Collapsible.Root
           open={anchorOpen}
           onOpenChange={setAnchorOpen}
-          className="w-full pl-2"
+          className="w-full"
         >
-          <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center py-[2px]">
-            <TriangleRightIcon className="group-data-[state=open]:rotate-90 h-4 w-4" />
+          <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center h-[25px] px-2">
+            <ChevronRightIcon className="group-data-[state=open]:rotate-90 h-3 w-3 stroke-current stroke-1" />
             <span>Anchor</span>
           </Collapsible.Trigger>
 
           <Collapsible.Content className="w-full bg-[rgb(255_255_255)] dark:bg-[rgb(40_40_40)] pl-5">
-            <dl className="flex flex-col">
-              <div className="grid grid-cols-2 gap-2 py-[2px]">
+            <dl className="flex flex-col px-1">
+              <div className="grid grid-cols-2 gap-2 min-h-[20px] py-[2px]">
                 <dt>Key</dt>
                 <dl>{anchor.key}</dl>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 py-[2px]">
+              <div className="grid grid-cols-2 gap-2 min-h-[20px] py-[2px]">
                 <dt>Offset</dt>
                 <dl>{anchor.offset}</dl>
               </div>
@@ -127,21 +127,21 @@ function RangeTable({
         <Collapsible.Root
           open={focusOpen}
           onOpenChange={setFocusOpen}
-          className="w-full pl-2"
+          className="w-full"
         >
-          <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center py-[2px]">
-            <TriangleRightIcon className="group-data-[state=open]:rotate-90 h-4 w-4" />
+          <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center h-[25px] px-2">
+            <ChevronRightIcon className="group-data-[state=open]:rotate-90 h-3 w-3 stroke-current stroke-1" />
             <span>Focus</span>
           </Collapsible.Trigger>
 
           <Collapsible.Content className="w-full bg-[rgb(255_255_255)] dark:bg-[rgb(40_40_40)] pl-5">
-            <dl className="flex flex-col">
-              <div className="grid grid-cols-2 gap-2 py-[2px]">
+            <dl className="flex flex-col px-1">
+              <div className="grid grid-cols-2 gap-2 min-h-[20px] py-[2px]">
                 <dt>Key</dt>
                 <dl>{focus.key}</dl>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 py-[2px]">
+              <div className="grid grid-cols-2 gap-2 min-h-[20px] py-[2px]">
                 <dt>Offset</dt>
                 <dl>{focus.offset}</dl>
               </div>
@@ -163,12 +163,12 @@ function NodesTable({
 
   return (
     <Collapsible.Root open={open} onOpenChange={setOpen} className="w-full">
-      <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center bg-[rgb(238_242_249)] dark:bg-[rgb(42_44_48)] border-b border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] h-[25px]">
-        <TriangleRightIcon className="group-data-[state=open]:rotate-90 h-4 w-4" />
-        <span className="flex items-center gap-2 text-[11px]">Nodes</span>
+      <Collapsible.Trigger className="group flex flex-row w-full gap-1 items-center justify-between bg-[rgb(238_242_249)] dark:bg-[rgb(42_44_48)] border-b border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] h-[25px] px-2">
+        <span>Nodes</span>
+        <ChevronRightIcon className="group-data-[state=open]:rotate-90 h-3 w-3 stroke-current stroke-1" />
       </Collapsible.Trigger>
 
-      <Collapsible.Content className="w-full bg-[rgb(255_255_255)] dark:bg-[rgb(40_40_40)] text-[11px]">
+      <Collapsible.Content className="w-full bg-[rgb(255_255_255)] dark:bg-[rgb(40_40_40)]">
         <table className="w-full text-left table-fixed border-b border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
           <thead className="border-b border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
             <tr>

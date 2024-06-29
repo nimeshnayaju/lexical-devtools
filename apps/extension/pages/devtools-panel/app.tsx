@@ -13,6 +13,7 @@ import PanelRightCloseIcon from "./icons/panel-right-close-icon";
 import PanelRightOpenIcon from "./icons/panel-right-open-icon";
 import SelectionPanel from "./selection-panel";
 import AlertCircledIcon from "./icons/alert-circled-icon";
+import InfoCircledIcon from "./icons/info-circled-icon";
 
 export default function App() {
   const revalidate = useRevalidateEditors();
@@ -104,7 +105,7 @@ export default function App() {
           <AlertCircledIcon className="w-7 h-7" />
           <h1 className="font-semibold text-sm">Could not load editors</h1>
         </div>
-        <p className="text-[11px] w-full flex items-center justify-center p-4 text-[rgb(71_71_71)] dark:text-[rgb(143_143_143)] border-t border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
+        <p className="text-[11px] w-full text-center p-4 text-[rgb(71_71_71)] dark:text-[rgb(143_143_143)] border-t border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
           Lexical DevTools can only access Lexical editors on applications that
           are running on a localhost environment.
         </p>
@@ -141,11 +142,14 @@ function Panel({ editors }: { editors: SerializedEditorState[] }) {
 
   if (editors.length === 0) {
     return (
-      <div className="h-full w-full flex flex-col gap-2 items-center justify-center p-4">
-        <h1 className="font-semibold text-sm">No editors found.</h1>
-        <p className="text-xs text-[rgb(71_71_71)] dark:text-[rgb(143_143_143)]">
-          To integrate developer tools for Lexical.js in your React application,
-          install <code>@lexical-devtools/react</code> and import{" "}
+      <div className="h-screen bg-white dark:bg-[rgb(40_40_40)] text-black dark:text-white flex flex-col items-center justify-between gap-2">
+        <div className="flex flex-1 flex-col items-center justify-center gap-2">
+          <InfoCircledIcon className="w-7 h-7" />
+          <h1 className="font-semibold text-sm">No editors found</h1>
+        </div>
+        <p className="text-[11px] w-full text-center p-4 text-[rgb(71_71_71)] dark:text-[rgb(143_143_143)] border-t border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
+          To use Lexical DevTools in your React application, install{" "}
+          <code>@lexical-devtools/react</code> and import{" "}
           <code>{`<DevtoolsPlugin />`}</code> inside your{" "}
           <code>{`LexicalComposer`}</code> component.
         </p>
