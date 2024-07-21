@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "version": "0.1.12",
+  "version": "0.1.13",
   "name": "Lexical DevTools",
   "description": "Lexical DevTools",
   "permissions": ["scripting", "activeTab", "webNavigation", "tabs"],
