@@ -6,7 +6,7 @@ import {
   useRevalidateEditors,
 } from "./root-store-provider";
 import type { SerializedEditorState } from "@lexical-devtools/utils";
-import NodeTree from "./node-tree";
+import NodeTree, { getNodeByKey } from "./node-tree";
 import Separator from "./separator";
 import ReloadIcon from "./icons/reload-icon";
 import PanelRightCloseIcon from "./icons/panel-right-close-icon";
@@ -14,6 +14,10 @@ import PanelRightOpenIcon from "./icons/panel-right-open-icon";
 import SelectionPanel from "./selection-panel";
 import AlertCircledIcon from "./icons/alert-circled-icon";
 import InfoCircledIcon from "./icons/info-circled-icon";
+import JsonTree from "./json-tree";
+import classNames from "./class-names";
+import PanelBottomCloseIcon from "./icons/panel-bottom-close-icon";
+import PanelBottomOpenIcon from "./icons/panel-bottom-open-icon";
 
 export default function App() {
   const revalidate = useRevalidateEditors();
@@ -105,7 +109,7 @@ export default function App() {
           <AlertCircledIcon className="w-7 h-7" />
           <h1 className="font-semibold text-sm">Could not load editors</h1>
         </div>
-        <p className="text-[11px] w-full text-center p-4 text-[rgb(71_71_71)] dark:text-[rgb(143_143_143)] border-t border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
+        <p className="text-[11px] w-full text-center p-4 text-[rgb(161_161_161)] dark:text-[rgb(143_143_143)] border-t border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
           Lexical DevTools can only access Lexical editors on applications that
           are running on a localhost environment.
         </p>
@@ -130,7 +134,7 @@ function Panel({ editors }: { editors: SerializedEditorState[] }) {
 
   const [showSidebar, setShowSidebar] = useState(true); // A boolean that represents whether the sidebar is visible or not
 
-  const [selected, setSelected] = useState<string[]>([]); // Array of the selected node ids in the editor node tree
+  const [selected, setSelected] = useState<string[]>(["root"]); // Array of the selected node ids in the editor node tree
   const [collapsed, setCollapsed] = useState<string[]>([]); // Array of the collapsed node ids in the editor node tree
 
   function handleEditorChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -172,10 +176,20 @@ function Panel({ editors }: { editors: SerializedEditorState[] }) {
     return null;
   }
 
+  // Retrieve the selected node from the tree
+  const node =
+    selected.length > 0 ? getNodeByKey(selectedEditor.root, selected[0]) : null;
+
   return (
-    <div className="h-full w-full flex flex-row">
+    <div className="h-full w-full flex md:flex-row flex-col">
       {/* Main content */}
-      <div className="h-full flex-1">
+      <div
+        className={classNames(
+          showSidebar
+            ? "md:w-[calc(100%-280px)] md:h-full h-[calc(100%-200px)] w-full"
+            : "w-full"
+        )}
+      >
         {/* Header */}
         <div className="h-[25px] flex flex-row items-center py-1 px-2 border-b bg-[rgb(238_242_249)] dark:bg-[rgb(60_60_60)] border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]">
           <div className="flex flex-row gap-2 items-center justify-between h-full w-full">
@@ -211,16 +225,22 @@ function Panel({ editors }: { editors: SerializedEditorState[] }) {
               onClick={() => setShowSidebar(!showSidebar)}
             >
               {showSidebar ? (
-                <PanelRightCloseIcon className="w-3.5 h-3.5" />
+                <>
+                  <PanelRightCloseIcon className="w-3.5 h-3.5 md:inline hidden" />
+                  <PanelBottomCloseIcon className="w-3.5 h-3.5 md:hidden inline" />
+                </>
               ) : (
-                <PanelRightOpenIcon className="w-3.5 h-3.5" />
+                <>
+                  <PanelRightOpenIcon className="w-3.5 h-3.5 md:inline hidden" />
+                  <PanelBottomOpenIcon className="w-3.5 h-3.5 md:hidden inline" />
+                </>
               )}
             </button>
           </div>
         </div>
 
         {/* Node tree */}
-        <div className="h-[calc(100%-25px)] flex flex-row">
+        <div className="h-[calc(100%-25px)] w-full flex flex-row">
           <NodeTree
             id={selectedEditor.id}
             data={selectedEditor.root}
@@ -228,14 +248,25 @@ function Panel({ editors }: { editors: SerializedEditorState[] }) {
             onSelectedChange={setSelected}
             collapsed={collapsed}
             onCollapsedChange={setCollapsed}
-            className="h-full w-full overflow-auto flex-1"
+            className={classNames(
+              "h-full overflow-auto",
+              node !== null ? "w-[calc(100%-250px)]" : "w-full"
+            )}
           />
+
+          {node !== null && (
+            <JsonTree
+              key={node.key}
+              data={node.meta}
+              className="w-[250px] h-full overflow-auto border-l border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)]"
+            />
+          )}
         </div>
       </div>
 
       {/* Sidebar */}
       {showSidebar && (
-        <div className="flex flex-col h-full basis-[280px] border-l border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] text-[11px]">
+        <div className="flex flex-col md:h-full md:w-[280px] h-[200px] md:border-l border-t border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] text-[11px]">
           <div className="h-[25px] flex w-full items-center justify-center border-b bg-[rgb(238_242_249)] dark:bg-[rgb(60_60_60)] border-[rgb(214_226_251)] dark:border-[rgb(94_94_94)] font-medium">
             Selection
           </div>

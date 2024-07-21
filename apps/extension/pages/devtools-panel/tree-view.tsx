@@ -1,55 +1,59 @@
 import {
   createContext,
-  DetailedHTMLProps,
   HTMLAttributes,
   MouseEvent,
   ReactNode,
+  RefObject,
   use,
   useCallback,
 } from "react";
 
-interface RootProps {
-  value: string[]; // The keys of the nodes that are selected.
-  onValueChange: (value: string[]) => void;
+type SelectedStateProps =
+  | {
+      selected: string[]; // The keys of the nodes that are selected.
+      onSelectedChange: (selected: string[]) => void;
+    }
+  | {
+      selected?: never;
+      onSelectedChange?: never;
+    };
 
+type CollapsedStateProps = {
   collapsed: string[]; // The keys of the nodes that are collapsed.
   onCollapsedChange: (collapsed: string[]) => void;
+};
 
-  children: ReactNode;
-}
+type RootProps = SelectedStateProps &
+  CollapsedStateProps & {
+    children: ReactNode;
+  };
 
-const CollapsedContext = createContext<string[] | null>(null);
-const CollapsedDispatchContext = createContext<
-  ((collapsed: string[]) => void) | null
->(null);
+type SelectedState = [string[], (selected: string[]) => void];
+const SelectedStateContext = createContext<SelectedState | null>(null);
 
-const SelectedContext = createContext<string[] | null>(null);
-const SelectedDispatchContext = createContext<
-  ((value: string[]) => void) | null
->(null);
+type CollapsedState = [string[], (collapsed: string[]) => void];
+const CollapsedStateContext = createContext<CollapsedState | null>(null);
 
 function Root(props: RootProps) {
-  const { children, value, onValueChange, collapsed, onCollapsedChange } =
+  const { children, selected, onSelectedChange, collapsed, onCollapsedChange } =
     props;
 
+  const selectedState: SelectedState | null =
+    selected !== undefined ? [selected, onSelectedChange] : null;
+
+  const collapsedState: CollapsedState | null =
+    collapsed !== undefined ? [collapsed, onCollapsedChange] : null;
+
   return (
-    <CollapsedContext.Provider value={collapsed}>
-      <CollapsedDispatchContext.Provider value={onCollapsedChange}>
-        <SelectedContext.Provider value={value}>
-          <SelectedDispatchContext.Provider value={onValueChange}>
-            {children}
-          </SelectedDispatchContext.Provider>
-        </SelectedContext.Provider>
-      </CollapsedDispatchContext.Provider>
-    </CollapsedContext.Provider>
+    <SelectedStateContext.Provider value={selectedState}>
+      <CollapsedStateContext.Provider value={collapsedState}>
+        {children}
+      </CollapsedStateContext.Provider>
+    </SelectedStateContext.Provider>
   );
 }
 
-interface TreeProps
-  extends DetailedHTMLProps<
-    HTMLAttributes<HTMLUListElement>,
-    HTMLUListElement
-  > {}
+interface TreeProps extends HTMLAttributes<HTMLUListElement> {}
 
 function Tree(props: TreeProps) {
   const { children, ...ulProps } = props;
@@ -89,8 +93,7 @@ const ItemValueContext = createContext<string | null>(null);
 
 const AncestorsContext = createContext<string[]>([]);
 
-interface ItemProps
-  extends DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement> {
+interface ItemProps extends HTMLAttributes<HTMLLIElement> {
   value: string;
 }
 
@@ -98,7 +101,6 @@ function Item(props: ItemProps) {
   const { children, value, style, ...liProps } = props;
 
   const isSelected = useIsSelected(value);
-
   const isCollapsed = useIsCollapsed(value);
 
   const ancestors = use(AncestorsContext);
@@ -129,8 +131,7 @@ function Item(props: ItemProps) {
   );
 }
 
-interface TriggerProps
-  extends DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {}
+interface TriggerProps extends HTMLAttributes<HTMLSpanElement> {}
 
 function Trigger(props: TriggerProps) {
   const { children, onClick, ...spanProps } = props;
@@ -167,11 +168,12 @@ function Trigger(props: TriggerProps) {
   );
 }
 
-interface ItemTextProps
-  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
+interface ItemTextProps extends HTMLAttributes<HTMLDivElement> {
+  ref?: RefObject<HTMLDivElement>;
+}
 
 function ItemText(props: ItemTextProps) {
-  const { onClick, onDoubleClick, ...divProps } = props;
+  const { ref, onClick, onDoubleClick, ...divProps } = props;
 
   const value = use(ItemValueContext);
   if (value === null) {
@@ -179,7 +181,6 @@ function ItemText(props: ItemTextProps) {
   }
 
   const isSelected = useIsSelected(value);
-
   const isCollapsed = useIsCollapsed(value);
 
   const select = useSelectNode(value);
@@ -189,8 +190,7 @@ function ItemText(props: ItemTextProps) {
     onClick?.(event);
     if (event.defaultPrevented) return;
 
-    select();
-    event.stopPropagation();
+    select?.();
   }
 
   function handleDoubleClick(event: MouseEvent<HTMLDivElement>) {
@@ -198,11 +198,11 @@ function ItemText(props: ItemTextProps) {
     if (event.defaultPrevented) return;
 
     expand();
-    event.stopPropagation();
   }
 
   return (
     <div
+      ref={ref}
       data-state={isCollapsed ? "closed" : "open"}
       data-selected={isSelected ? "" : undefined}
       {...divProps}
@@ -212,36 +212,12 @@ function ItemText(props: ItemTextProps) {
   );
 }
 
-function useSelected(): string[] {
-  const selected = use(SelectedContext);
-  if (selected === null) {
-    throw new Error("SelectedContext not found");
+function useCollapsedState(): CollapsedState {
+  const state = use(CollapsedStateContext);
+  if (state === null) {
+    throw new Error("useCollapsedState must be used within a Root component");
   }
-  return selected;
-}
-
-function useDispatchSelected() {
-  const dispatch = use(SelectedDispatchContext);
-  if (dispatch === null) {
-    throw new Error("useDispatchSelected must be used within a Root component");
-  }
-  return dispatch;
-}
-
-function useCollapsed(): string[] {
-  const collapsed = use(CollapsedContext);
-  if (collapsed === null) {
-    throw new Error("CollapsedContext not found");
-  }
-  return collapsed;
-}
-
-function useDispatchCollapsed() {
-  const dispatch = use(CollapsedDispatchContext);
-  if (dispatch === null) {
-    throw new Error("CollapsedDispatchContext not found");
-  }
-  return dispatch;
+  return state;
 }
 
 /**
@@ -250,7 +226,7 @@ function useDispatchCollapsed() {
  * @returns true if the node with the given key is collapsed, false otherwise.
  */
 function useIsCollapsed(key: string): boolean {
-  const collapsed = useCollapsed();
+  const [collapsed] = useCollapsedState();
   const isCollapsed = collapsed.includes(key);
   return isCollapsed;
 }
@@ -258,23 +234,22 @@ function useIsCollapsed(key: string): boolean {
 /**
  * Returns whether the node with the given key is selected or not.
  * @param key The key of the node to check.
- * @returns true if the node with the given key is selected, false otherwise.
+ * @returns true if the node with the given key is selected, false otherwise. If SelectedStateContext is not found, returns undefined.
  */
-function useIsSelected(key: string): boolean {
-  const selected = useSelected();
-  const isSelected = selected.includes(key);
+function useIsSelected(key: string): boolean | undefined {
+  const selected = use(SelectedStateContext);
+  const isSelected = selected !== null ? selected[0].includes(key) : undefined;
   return isSelected;
 }
 
 function useCollapseNode(key: string) {
-  const collapsed = useCollapsed();
-  const dispatch = useDispatchCollapsed();
+  const [collapsed, setCollapsed] = useCollapsedState();
 
   const collapse = useCallback(() => {
     if (collapsed.includes(key)) return;
 
-    dispatch([...collapsed, key]);
-  }, [collapsed, key, dispatch]);
+    setCollapsed([...collapsed, key]);
+  }, [collapsed, key, setCollapsed]);
 
   return collapse;
 }
@@ -285,8 +260,7 @@ function useCollapseNode(key: string) {
  * @returns A function that expands the node with the given key.
  */
 function useExpandNode(key: string) {
-  const collapsed = useCollapsed();
-  const dispatch = useDispatchCollapsed();
+  const [collapsed, setCollapsed] = useCollapsedState();
 
   const ancestors = use(AncestorsContext);
 
@@ -300,8 +274,8 @@ function useExpandNode(key: string) {
 
     // Include the current node in the list of keys to expand
     const keys = [...ancestors, key];
-    dispatch(collapsed.filter((k) => !keys.includes(k)));
-  }, [ancestors, key, dispatch, collapsed]);
+    setCollapsed(collapsed.filter((k) => !keys.includes(k)));
+  }, [ancestors, key, setCollapsed, collapsed]);
 
   return expandNode;
 }
@@ -311,9 +285,12 @@ function useExpandNode(key: string) {
  * @param key The key of the node to select.
  * @returns A function that selects the node with the given key.
  */
-function useSelectNode(key: string) {
-  const isSelected = useIsSelected(key);
-  const dispatchSelected = useDispatchSelected();
+function useSelectNode(key: string): (() => void) | null {
+  const state = use(SelectedStateContext);
+  if (state === null) return null;
+
+  const [selected, setSelected] = state;
+  const isSelected = selected.includes(key);
 
   /**
    * Select the node with the given key.
@@ -322,8 +299,8 @@ function useSelectNode(key: string) {
     if (isSelected) return;
 
     // Select the node
-    dispatchSelected([key]);
-  }, [isSelected, dispatchSelected, key]);
+    setSelected([key]);
+  }, [isSelected, setSelected, key]);
 
   return selectNode;
 }
