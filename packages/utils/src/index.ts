@@ -1,8 +1,6 @@
 export { $serializeEditor } from "./serialize-editor";
 export type { SerializedEditorState } from "./serialize-editor";
 
-export { isJsonArray, isJsonObject, isJsonScalar } from "./serialize-node";
-
 export type {
   SerializedLexicalNode,
   SerializedRootNode,
